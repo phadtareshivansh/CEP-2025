@@ -1,3 +1,49 @@
+footer {
+  width: 100%;
+  background: #7a0c2e;
+  color: white;
+
+  border-top: 6px solid #e7b10a;
+}
+
+.footer-row {
+  display: flex;
+  justify-content: space-between;
+  
+  flex-wrap: wrap;
+}
+
+.footer-col {
+  width: 45%;
+  min-width: 280px;
+}
+/* Make footer span entire screen width */
+.footer-full {
+  width: 100%;
+  background: #111; /* same as bootstrap bg-dark */
+}
+
+/* Make inner content stretch fully, not boxed */
+.footer-inner {
+  width: 100%;
+  max-width: 100%;
+  padding: 40px 60px;   /* spreads the content */
+}
+
+/* Remove container-like restriction */
+.footer-inner .row {
+  margin-left: 0;
+  margin-right: 0;
+}
+
+.footer-bottom {
+  text-align: center;
+  margin-top: 25px;
+  padding-top: 10px;
+  border-top: 1px solid rgba(255,255,255,0.3);
+  font-size: 0.9rem;
+}
+
 /* --------------------------------------
    GLOBAL MOBILE RESPONSIVE FIXES
 --------------------------------------- */
