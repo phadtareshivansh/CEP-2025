@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard</title>
+  <link rel="stylesheet" href="assets/css/dashstudent.css"> 
+  <!-- Same CSS as student dashboard -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+
+  <!-- Navbar -->
+  <div class="navbar">
+    <div class="logo-section">
+      <img src="https://th.bing.com/th/id/OIP.Y--lq46X4cVb7nFob31SaQHaDl?r=0&o=7&pid=ImgDetMain" alt="College Logo">
+      <h1>Admin Dashboard</h1>
+    </div>
+
+    <div class="menu">
+      <a href="index.html">Logout</a>
+    </div>
+  </div>
+
+  <!-- Dashboard Content -->
+  <div class="dashboard">
+    <h2>Welcome, Admin 👋</h2>
+
+    <div class="card-grid">
+      <!-- Faculty -->
+      <div class="card">
+        <i class="fas fa-user-tie"></i>
+        <a href="https://console.firebase.google.com/project/aiml-portal-pcu/firestore/databases/-default-/data/~2Ffaculty~2FZKqtpykxVtIMPHnq4ujd">
+        <h3>Manage Faculty</h3>
+        </a>
+        <p>Add or modify faculty information.</p>
+      </div>
+      <!-- Manage Students -->
+      <div class="card">
+        <i class="fas fa-users"></i>
+        <a href="managestudent.html">
+        <h3>Manage Students</h3>
+        </a>
+        <p>View, edit, and delete student accounts.</p>
+      </div>
+
+      <!-- Upload Notes -->
+      <div class="card">
+        <i class="fas fa-upload"></i>
+        <a href="https://drive.google.com/drive/folders/1b06JbwFa-6fPnN95XmfBAxebQB_ToF10">
+        <h3>Manage Notes access</h3>
+        </a>
+        <p>Upload PDFs and study material for students.</p>
+      </div>
+
+      <!-- Notices -->
+      <div class="card">
+        <i class="fas fa-bell"></i>
+        <h3>Post Notices</h3>
+        <p>Create and update important announcements.</p>
+      </div>
+
+      <!-- Attendance -->
+      <div class="card">
+        <i class="fas fa-check-circle"></i>
+        <h3>Attendance Panel</h3>
+        <p>Modify attendance and monitor records.</p>
+      </div>
+
+      <!-- Timetable -->
+      <div class="card">
+        <i class="fas fa-calendar-alt"></i>
+        <h3>Upload Timetable</h3>
+        <p>Add or update class timetables.</p>
+      </div>
+
+      <!-- Exam Control -->
+      <div class="card">
+        <i class="fas fa-edit"></i>
+        <h3>Exam Control</h3>
+        <p>Manage exam schedules and results.</p>
+      </div>
+
+
+
+      <!-- Chat / Support -->
+      <div class="card">
+        <i class="fas fa-headset"></i>
+        <h3>Support</h3>
+        <p>Handle student queries and support tickets.</p>
+      </div>
+
+      <!-- Settings -->
+      <div class="card">
+        <i class="fas fa-cogs"></i>
+        <h3>Settings</h3>
+        <p>Modify system settings and configuration.</p>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    // Highlight active link in navbar
+    const currentPage = window.location.pathname.split("/").pop();
+    const navLinks = document.querySelectorAll(".menu a");
+  
+    navLinks.forEach(link => {
+      if (link.getAttribute("href") === currentPage) {
+        link.classList.add("active");
+      }
+    });
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,355 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Admin — Manage Students</title>
+  <link rel="stylesheet" href="assets/css/dashstudent.css">
+  <style>
+    :root{--blue:#0b5cff;--muted:#6b7280;font-family:Inter,system-ui, Arial, sans-serif}
+    body{margin:0;background:#f7fbff;color:#0b1726}
+    .navbar{display:flex;align-items:center;justify-content:space-between;padding:12px 20px;background:#fff;border-bottom:1px solid #eef2f7}
+    .logo-section{display:flex;align-items:center;gap:12px}
+    .logo-section img{width:44px;height:44px;border-radius:8px;object-fit:cover}
+    .menu a{margin-left:12px;text-decoration:none;color:var(--muted)}
+    .container{max-width:1100px;margin:20px auto;padding:16px}
+    h1{margin:0 0 8px}
+    .grid{display:grid;grid-template-columns:360px 1fr;gap:16px}
+    .card{background:#fff;padding:12px;border-radius:10px;box-shadow:0 6px 18px rgba(2,6,23,0.04)}
+    form input, form select{width:100%;padding:8px;border-radius:6px;border:1px solid #e6eef7;margin-bottom:8px}
+    .btn{background:var(--blue);color:#fff;padding:8px 12px;border-radius:8px;border:none;cursor:pointer}
+    .btn.secondary{background:#06b6d4}
+    .controls{display:flex;gap:8px;align-items:center;margin-bottom:10px}
+    table{width:100%;border-collapse:collapse;background:#fff;border-radius:8px;overflow:hidden}
+    th,td{padding:8px 10px;text-align:left;border-bottom:1px solid #eef2f7;font-size:14px}
+    thead th{background:var(--blue);color:#fff;font-weight:600}
+    .small{font-size:13px;color:var(--muted)}
+    .icon-btn{background:transparent;border:1px solid #e6eef7;padding:6px;border-radius:6px;cursor:pointer}
+    .row-actions button{margin-right:6px}
+    .msg{margin-top:8px;color:green}
+    .danger{color:#b91c1c}
+  </style>
+</head>
+<body>
+  <div class="navbar">
+    <div class="logo-section">
+      <img src="https://th.bing.com/th/id/OIP.Y--lq46X4cVb7nFob31SaQHaDl?r=0&o=7&pid=ImgDetMain" alt="logo">
+      <div>
+        <div style="font-weight:700">Admin Dashboard</div>
+        <div class="small">Manage students (add / edit / delete)</div>
+      </div>
+    </div>
+    <div class="menu">
+      <a href="index.html">Logout</a>
+    </div>
+    div class="menu">
+      <a href="dashadmin.html">Back</a>
+    </div>
+  </div>
+
+  <main class="container">
+    <h1>Student Management</h1>
+
+    <div class="grid">
+      <!-- LEFT: add new student -->
+      <div class="card">
+        <h3>Add / Import Student</h3>
+        <form id="addStudentForm">
+          <label class="small">Roll (numeric)</label>
+          <input id="inputRoll" placeholder="e.g. 46" type="text" inputmode="numeric" />
+
+          <label class="small">PRN (optional)</label>
+          <input id="inputPrn" placeholder="PRN or unique id" type="text" />
+
+          <label class="small">Name</label>
+          <input id="inputName" placeholder="Student Name" type="text" required />
+
+          <label class="small">Division / Class</label>
+          <input id="inputDivision" placeholder="e.g. A" type="text" />
+
+          <div style="display:flex;gap:8px">
+            <button class="btn" id="addBtn" type="button">Add Student</button>
+            <button class="btn secondary" id="clearFormBtn" type="button">Clear</button>
+          </div>
+
+          <div id="addMsg" class="msg" role="status" aria-live="polite"></div>
+        </form>
+
+        <hr style="margin:12px 0">
+
+        <h4>Bulk / CSV</h4>
+        <p class="small">You can add a CSV importer later. For now use Add Student repeatedly for quick additions.</p>
+      </div>
+
+      <!-- RIGHT: student list + actions -->
+      <div class="card">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+          <div style="display:flex;gap:8px;align-items:center">
+            <input id="searchInput" placeholder="Search by roll, name or PRN" style="padding:8px;border-radius:6px;border:1px solid #e6eef7;width:320px">
+            <button id="refreshBtn" class="icon-btn" title="Refresh">↻</button>
+            <button id="exportBtn" class="icon-btn" title="Export CSV">⇩ CSV</button>
+          </div>
+          <div class="small">Realtime students count: <span id="countSpan">0</span></div>
+        </div>
+
+        <div style="max-height:520px;overflow:auto;border-radius:8px">
+          <table id="studentsTable" aria-live="polite">
+            <thead>
+              <tr><th>Roll</th><th>PRN</th><th>Name</th><th>Div</th><th>Actions</th></tr>
+            </thead>
+            <tbody id="studentsTbody">
+              <tr><td colspan="5" class="small">Loading students…</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div id="listMsg" class="small" style="margin-top:8px"></div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Firebase + management logic -->
+  <script type="module">
+    // ---------------- Firebase config (use your project's credentials) ----------------
+    const firebaseConfig = {
+      apiKey: "AIzaSyCmr6ohetgRU38w1UPf5WlviPc869MqrKE",
+      authDomain: "aiml-portal.firebaseapp.com",
+      projectId: "aiml-portal",
+      storageBucket: "aiml-portal.firebasestorage.app",
+      messagingSenderId: "976880421269",
+      appId: "1:976880421269:web:33d16bf4147259032b4e9c",
+      measurementId: "G-M8X3YJF1GK"
+    };
+
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
+    import {
+      getFirestore,
+      collection,
+      query,
+      orderBy,
+      onSnapshot,
+      addDoc,
+      setDoc,
+      doc,
+      deleteDoc,
+      where,
+      getDocs,
+      getDoc,
+      updateDoc,
+      serverTimestamp
+    } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    // DOM refs
+    const studentsTbody = document.getElementById('studentsTbody');
+    const countSpan = document.getElementById('countSpan');
+    const addBtn = document.getElementById('addBtn');
+    const inputRoll = document.getElementById('inputRoll');
+    const inputPrn = document.getElementById('inputPrn');
+    const inputName = document.getElementById('inputName');
+    const inputDivision = document.getElementById('inputDivision');
+    const addMsg = document.getElementById('addMsg');
+    const searchInput = document.getElementById('searchInput');
+    const refreshBtn = document.getElementById('refreshBtn');
+    const exportBtn = document.getElementById('exportBtn');
+    const clearFormBtn = document.getElementById('clearFormBtn');
+
+    // local cache of students (doc objects)
+    let studentsCache = [];
+
+    // Helper: sanitize string
+    const s = v => (v === undefined || v === null) ? '' : String(v).trim();
+
+    // ------------- Real-time subscription to students collection -------------
+    // Order by roll if available, else by name
+    const studentsCol = collection(db, 'students');
+    const studentsQ = query(studentsCol, orderBy('roll'));
+
+    // subscribe
+    onSnapshot(studentsQ, snapshot => {
+      const docs = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+      studentsCache = docs;
+      renderStudentRows(docs);
+    }, err => {
+      console.error('students subscription error:', err);
+      studentsTbody.innerHTML = '<tr><td colspan="5" class="small">Failed to load students (see console)</td></tr>';
+    });
+
+    // ------------- Render function -------------
+    function renderStudentRows(list) {
+      const filter = s(searchInput.value).toLowerCase();
+      const filtered = list.filter(it => {
+        if (!filter) return true;
+        return (s(it.roll) + ' ' + s(it.prn) + ' ' + s(it.name)).toLowerCase().includes(filter);
+      });
+
+      countSpan.textContent = filtered.length;
+
+      if (filtered.length === 0) {
+        studentsTbody.innerHTML = '<tr><td colspan="5" class="small">No students found.</td></tr>';
+        return;
+      }
+
+      studentsTbody.innerHTML = '';
+      filtered.forEach(docItem => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${s(docItem.roll)}</td>
+          <td>${s(docItem.prn)}</td>
+          <td>${s(docItem.name)}</td>
+          <td>${s(docItem.division)}</td>
+          <td class="row-actions">
+            <button class="icon-btn" data-id="${docItem.id}" data-action="edit">✎</button>
+            <button class="icon-btn danger" data-id="${docItem.id}" data-action="delete">🗑</button>
+          </td>
+        `;
+        studentsTbody.appendChild(tr);
+      });
+      // attach handlers (event delegation)
+    }
+
+    // handle click on edit/delete via delegation
+    studentsTbody.addEventListener('click', async (ev) => {
+      const btn = ev.target.closest('button');
+      if (!btn) return;
+      const id = btn.dataset.id;
+      const action = btn.dataset.action;
+      if (!id || !action) return;
+
+      if (action === 'edit') {
+        await handleEditStudent(id);
+      } else if (action === 'delete') {
+        await handleDeleteStudent(id);
+      }
+    });
+
+    // ------------- Add student -------------
+    addBtn.addEventListener('click', async () => {
+      const roll = s(inputRoll.value);
+      const prn = s(inputPrn.value);
+      const name = s(inputName.value);
+      const division = s(inputDivision.value);
+
+      if (!name) {
+        addMsg.textContent = 'Name is required';
+        setTimeout(()=> addMsg.textContent = '', 3000);
+        return;
+      }
+
+      addBtn.disabled = true;
+      addMsg.textContent = 'Saving...';
+
+      try {
+        // Option A: if you want to make roll unique as doc id (uncomment):
+        // if (roll) await setDoc(doc(db,'students',roll), { roll, prn, name, division, createdAt: serverTimestamp() });
+
+        // Option B (recommended): add automatic doc id
+        const payload = { roll, prn, name, division, createdAt: serverTimestamp() };
+        const docRef = await addDoc(collection(db,'students'), payload);
+
+        addMsg.textContent = `Added (id:${docRef.id})`;
+        // clear form
+        inputRoll.value = '';
+        inputPrn.value = '';
+        inputName.value = '';
+        inputDivision.value = '';
+      } catch (err) {
+        console.error('add student error', err);
+        addMsg.textContent = 'Failed to add (see console)';
+      } finally {
+        addBtn.disabled = false;
+        setTimeout(()=> addMsg.textContent = '', 3000);
+      }
+    });
+
+    clearFormBtn.addEventListener('click', () => {
+      inputRoll.value = '';
+      inputPrn.value = '';
+      inputName.value = '';
+      inputDivision.value = '';
+      addMsg.textContent = '';
+    });
+
+    // ------------- Edit student -------------
+    async function handleEditStudent(docId) {
+      try {
+        const docRef = doc(db, 'students', docId);
+        const snap = await getDoc(docRef);
+        if (!snap.exists()) { alert('Record not found'); return; }
+        const data = snap.data();
+        // simple prompt-based edit (for quick admin). You can replace with modal.
+        const newName = prompt('Edit name:', data.name || '');
+        if (newName === null) return; // cancelled
+        const newRoll = prompt('Edit roll:', data.roll || '');
+        if (newRoll === null) return;
+        const newPrn = prompt('Edit PRN:', data.prn || '');
+        if (newPrn === null) return;
+        const newDiv = prompt('Edit division:', data.division || '');
+        if (newDiv === null) return;
+
+        // update
+        await updateDoc(docRef, {
+          name: s(newName),
+          roll: s(newRoll),
+          prn: s(newPrn),
+          division: s(newDiv),
+          updatedAt: serverTimestamp()
+        });
+
+        // feedback
+        document.getElementById('listMsg').textContent = 'Updated successfully';
+        setTimeout(()=> document.getElementById('listMsg').textContent = '', 2500);
+      } catch (err) {
+        console.error('edit error', err);
+        alert('Failed to update. Check console.');
+      }
+    }
+
+    // ------------- Delete student -------------
+    async function handleDeleteStudent(docId) {
+      if (!confirm('Delete this student? This cannot be undone.')) return;
+      try {
+        await deleteDoc(doc(db,'students',docId));
+        document.getElementById('listMsg').textContent = 'Deleted';
+        setTimeout(()=> document.getElementById('listMsg').textContent = '', 2000);
+      } catch (err) {
+        console.error('delete error', err);
+        alert('Failed to delete. Check console.');
+      }
+    }
+
+    // ------------- Search / Refresh / Export -------------
+    searchInput.addEventListener('input', () => renderStudentRows(studentsCache));
+    refreshBtn.addEventListener('click', () => renderStudentRows(studentsCache));
+
+    exportBtn.addEventListener('click', () => {
+      // export currently visible rows to CSV
+      const rows = Array.from(document.querySelectorAll('#studentsTbody tr'));
+      if (!rows.length) { alert('No rows to export'); return; }
+      // build CSV from studentsCache filtered
+      const filter = s(searchInput.value).toLowerCase();
+      const filtered = studentsCache.filter(it => {
+        if (!filter) return true;
+        return (s(it.roll) + ' ' + s(it.prn) + ' ' + s(it.name)).toLowerCase().includes(filter);
+      });
+      if (!filtered.length) { alert('No rows to export'); return; }
+      const headers = ['docId','roll','prn','name','division'];
+      const csv = [headers.join(',')].concat(filtered.map(r => {
+        return [r.id, JSON.stringify(r.roll || ''), JSON.stringify(r.prn || ''), JSON.stringify(r.name || ''), JSON.stringify(r.division || '')].join(',');
+      })).join('\\n');
+      const blob = new Blob([csv], {type:'text/csv;charset=utf-8;'});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'students_export.csv';
+      a.click();
+      URL.revokeObjectURL(url);
+    });
+
+    // initial message
+    document.getElementById('listMsg').textContent = 'Waiting for students...';
+  </script>
+</body>
+</html>

@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Login</title>
+  <link rel="stylesheet" href="assets/css/studentlogin.css">
+</head>
+<body>
+  <div class="login-card">
+    <img src="https://th.bing.com/th/id/OIP.Y--lq46X4cVb7nFob31SaQHaDl?pid=ImgDetMain" alt="College Logo">
+    <h2>Admin <span>Sign-In</span></h2>
+
+    <div class="input-group">
+      <input type="text" id="email" placeholder="Admin Email">
+    </div>
+
+    <div class="input-group">
+      <input type="password" id="password" placeholder="Password">
+      <span class="toggle-password" onclick="togglePassword()">👁</span>
+    </div>
+
+    <button class="login-btn" onclick="adminLogin()">SIGN IN</button>
+
+    <div class="links">
+      <a href="#">Help</a>
+      <a href="#">Forgot Password?</a>
+    </div>
+  </div>
+
+  <!-- Firebase Correct Script -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+
+    // ✅ USE ONLY THIS CONFIG (REAL ONE)
+    const firebaseConfig = {
+      apiKey: "AIzaSyACUO70uoleuXL9kiuPmlWunpQfybkWeWA",
+      authDomain: "aiml-portal-pcu.firebaseapp.com",
+      projectId: "aiml-portal-pcu",
+      storageBucket: "aiml-portal-pcu.firebasestorage.app",
+      messagingSenderId: "523280343684",
+      appId: "1:523280343684:web:d2a941da9453591f31d8d1",
+      measurementId: "G-PP02VHTXSN"
+    };
+
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+    // ==============================
+    //  ADMIN LOGIN FUNCTION
+    // ==============================
+    window.adminLogin = function() {
+      const email = document.getElementById("email").value.trim();
+      const password = document.getElementById("password").value;
+
+      if (!email || !password) {
+        alert("⚠ Please enter Email & Password");
+        return;
+      }
+
+      signInWithEmailAndPassword(auth, email, password)
+        .then((userCredential) => {
+          window.location.href = "dashadmin.html";  // SUCCESS REDIRECT
+        })
+        .catch((error) => {
+          alert("❌ Login Failed: " + error.message);
+        });
+    };
+  </script>
+
+  <script>
+    function togglePassword() {
+      const passwordInput = document.getElementById('password');
+      passwordInput.type = passwordInput.type === 'password' ? 'text' : 'password';
+    }
+  </script>
+
+</body>
+</html>
