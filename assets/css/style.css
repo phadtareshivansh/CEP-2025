@@ -1,3 +1,118 @@
+/* --------------------------------------
+   GLOBAL MOBILE RESPONSIVE FIXES
+--------------------------------------- */
+html, body {
+  overflow-x: hidden;
+}
+
+/* Scale all headings for mobile */
+h1, h2, h3, h4, h5 {
+  font-size: clamp(18px, 4vw, 28px);
+}
+
+/* Section text auto-resize */
+.section-text {
+  font-size: clamp(14px, 3.5vw, 18px);
+  line-height: 1.6;
+}
+
+/* --------------------------------------
+   NAVBAR RESPONSIVE
+--------------------------------------- */
+@media (max-width: 768px) {
+
+  header .container {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  header img {
+    height: 40px !important;
+  }
+
+  nav ul {
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  nav .nav-link {
+    padding: 5px 0;
+    font-size: 16px;
+  }
+}
+
+/* --------------------------------------
+   TOP BAR FIX
+--------------------------------------- */
+@media (max-width: 576px) {
+  .bg-dark .container {
+    flex-direction: column;
+    text-align: center;
+    gap: 5px;
+  }
+}
+
+/* --------------------------------------
+   CAROUSEL RESPONSIVE
+--------------------------------------- */
+#heroCarousel img {
+  height: auto;
+  max-height: 350px;
+  object-fit: cover;
+}
+
+/* --------------------------------------
+   ABOUT, VISION, MISSION CARDS
+--------------------------------------- */
+@media (max-width: 768px) {
+  #about .row {
+    flex-direction: column;
+  }
+  
+  .pop-card {
+    padding: 20px !important;
+  }
+}
+
+/* --------------------------------------
+   DEPT OVERVIEW FIX
+--------------------------------------- */
+@media (max-width: 768px) {
+  #dept-overview .d-flex {
+    flex-direction: column;
+    text-align: center;
+  }
+}
+
+/* --------------------------------------
+   STATS SECTION RESPONSIVE
+--------------------------------------- */
+@media (max-width: 768px) {
+  #stats .row {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 25px;
+  }
+}
+@media (max-width: 400px) {
+  #stats .row {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* --------------------------------------
+   FOOTER RESPONSIVE
+--------------------------------------- */
+@media (max-width: 768px) {
+  footer .row {
+    text-align: center !important;
+  }
+  
+  #contact .row {
+    flex-direction: column;
+  }
+}
+
 
 .pop-card:hover {
   transform: scale(1.03);
