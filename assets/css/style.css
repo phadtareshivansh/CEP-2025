@@ -1,47 +1,24 @@
-footer {
-  width: 100%;
-  background: #7a0c2e;
-  color: white;
-
-  border-top: 6px solid #e7b10a;
+#recruiters img {
+  transition: transform 0.3s ease;
 }
 
-.footer-row {
-  display: flex;
-  justify-content: space-between;
-  
-  flex-wrap: wrap;
+#recruiters img:hover {
+  transform: scale(1.08);
 }
 
-.footer-col {
-  width: 45%;
-  min-width: 280px;
-}
-/* Make footer span entire screen width */
-.footer-full {
-  width: 100%;
-  background: #111; /* same as bootstrap bg-dark */
+/* ====== Footer ====== */
+footer h5 {
+  font-weight: 600;
+  margin-bottom: 10px;
 }
 
-/* Make inner content stretch fully, not boxed */
-.footer-inner {
-  width: 100%;
-  max-width: 100%;
-  padding: 40px 60px;   /* spreads the content */
+footer a:hover {
+  color: #0d6efd;
 }
 
-/* Remove container-like restriction */
-.footer-inner .row {
-  margin-left: 0;
-  margin-right: 0;
-}
-
-.footer-bottom {
-  text-align: center;
-  margin-top: 25px;
-  padding-top: 10px;
-  border-top: 1px solid rgba(255,255,255,0.3);
-  font-size: 0.9rem;
+.section-text {
+  font-size: 1rem;
+  line-height: 1.6;
 }
 
 /* --------------------------------------
@@ -156,8 +133,10 @@ h1, h2, h3, h4, h5 {
   
   #contact .row {
     flex-direction: column;
+    scroll-behavior: smooth;
   }
 }
+
 
 
 .pop-card:hover {
@@ -178,7 +157,7 @@ h1, h2, h3, h4, h5 {
 }
 
 
-.contact dropdown/
+
 html {
   scroll-behavior: smooth;
 }
