@@ -1,163 +1,16 @@
-#recruiters img {
-  transition: transform 0.3s ease;
+.pop-card {
+  transition: all 0.4s ease-in-out;
+  transform: scale(1);
 }
-
-#recruiters img:hover {
-  transform: scale(1.08);
-}
-
-/* ====== Footer ====== */
-footer h5 {
-  font-weight: 600;
-  margin-bottom: 10px;
-}
-
-footer a:hover {
-  color: #0d6efd;
-}
-
-.section-text {
-  font-size: 1rem;
-  line-height: 1.6;
-}
-
-/* --------------------------------------
-   GLOBAL MOBILE RESPONSIVE FIXES
---------------------------------------- */
-html, body {
-  overflow-x: hidden;
-}
-
-/* Scale all headings for mobile */
-h1, h2, h3, h4, h5 {
-  font-size: clamp(18px, 4vw, 28px);
-}
-
-/* Section text auto-resize */
-.section-text {
-  font-size: clamp(14px, 3.5vw, 18px);
-  line-height: 1.6;
-}
-
-/* --------------------------------------
-   NAVBAR RESPONSIVE
---------------------------------------- */
-@media (max-width: 768px) {
-
-  header .container {
-    flex-direction: column;
-    text-align: center;
-  }
-
-  header img {
-    height: 40px !important;
-  }
-
-  nav ul {
-    flex-direction: column;
-    gap: 6px;
-  }
-
-  nav .nav-link {
-    padding: 5px 0;
-    font-size: 16px;
-  }
-}
-
-/* --------------------------------------
-   TOP BAR FIX
---------------------------------------- */
-@media (max-width: 576px) {
-  .bg-dark .container {
-    flex-direction: column;
-    text-align: center;
-    gap: 5px;
-  }
-}
-
-/* --------------------------------------
-   CAROUSEL RESPONSIVE
---------------------------------------- */
-#heroCarousel img {
-  height: auto;
-  max-height: 350px;
-  object-fit: cover;
-}
-
-/* --------------------------------------
-   ABOUT, VISION, MISSION CARDS
---------------------------------------- */
-@media (max-width: 768px) {
-  #about .row {
-    flex-direction: column;
-  }
-  
-  .pop-card {
-    padding: 20px !important;
-  }
-}
-
-/* --------------------------------------
-   DEPT OVERVIEW FIX
---------------------------------------- */
-@media (max-width: 768px) {
-  #dept-overview .d-flex {
-    flex-direction: column;
-    text-align: center;
-  }
-}
-
-/* --------------------------------------
-   STATS SECTION RESPONSIVE
---------------------------------------- */
-@media (max-width: 768px) {
-  #stats .row {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 25px;
-  }
-}
-@media (max-width: 400px) {
-  #stats .row {
-    grid-template-columns: 1fr;
-  }
-}
-
-/* --------------------------------------
-   FOOTER RESPONSIVE
---------------------------------------- */
-@media (max-width: 768px) {
-  footer .row {
-    text-align: center !important;
-  }
-  
-  #contact .row {
-    flex-direction: column;
-    scroll-behavior: smooth;
-  }
-}
-
-
 
 .pop-card:hover {
   transform: scale(1.03);
   box-shadow: 0 0 25px rgba(0, 0, 0, 0.15);
   background-color: #f9fafb;
 }
-/* Matching Mission & Vision Card Style */
-.pop-card {
-  background: white;
-  padding: 20px;
-  border-radius: 1rem;          /* Rounded corners */
-  border-top: 6px solid;
-  border-image: linear-gradient(to right, #7a0c2e, #e7b10a) 1;
-  transition: all 0.4s ease-in-out;
-  transform: scale(1);
-  box-shadow: 0 0 8px rgba(0, 0, 0, 0.08);   /* soft shadow */
-}
 
 
-
+.contact dropdown/
 html {
   scroll-behavior: smooth;
 }
@@ -240,4 +93,126 @@ footer a:hover {
 .section-text {
   font-size: 1rem;      /* adjust this value as needed */
   line-height: 1.6;
+}
+/* Mobile Responsive Fixes */
+@media (max-width: 768px) {
+
+  /* images fit mobile screen */
+  img {
+    width: 100%;
+    height: auto;
+  }
+
+  /* text adjusts */
+  h1, h2, h3, p {
+    text-align: center;
+  }
+
+  /* padding fixes */
+  section, .container {
+    padding: 20px;
+  }
+
+  /* columns stack vertically */
+  .row > div {
+    margin-bottom: 20px;
+  }
+
+  /* navbar mobile spacing */
+  .navbar-nav {
+    text-align: center;
+    gap: 10px;
+  }
+}
+	
+	
+/* ====== Additional Mobile Responsive Fixes ====== */
+@media (max-width: 768px) {
+  /* Header and Navigation */
+  header .container {
+    flex-direction: column;
+    text-align: center;
+    padding: 10px 0;
+  }
+  
+  header .d-flex {
+    margin-bottom: 15px;
+    justify-content: center;
+  }
+  
+  header nav ul {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  
+  header nav .nav-item {
+    margin: 5px 0;
+  }
+  
+  /* Hero Carousel */
+  .carousel-caption h5 {
+    font-size: 1.5rem;
+  }
+  
+  .carousel-caption p {
+    font-size: 1rem;
+  }
+  
+  /* Stats Section */
+  #stats .counter {
+    font-size: 1.75rem;
+  }
+  
+  /* Recruiters Section */
+  #recruiters .col-6 {
+    margin-bottom: 20px;
+  }
+  
+  /* Footer */
+  footer .row {
+    text-align: center;
+  }
+  
+  footer .col-md-6 {
+    margin-bottom: 25px;
+  }
+  
+  /* Card hover effects - reduce on mobile for better performance */
+  .pop-card:hover {
+    transform: scale(1.01);
+  }
+  
+  /* Ensure proper spacing */
+  .py-5 {
+    padding-top: 2rem !important;
+    padding-bottom: 2rem !important;
+  }
+}
+
+/* Extra small devices */
+@media (max-width: 576px) {
+  /* Further adjustments for very small screens */
+  h2 {
+    font-size: 1.5rem;
+  }
+  
+  .carousel-caption h5 {
+    font-size: 1.25rem;
+  }
+  
+  /* Make navigation items more tappable */
+  .nav-link {
+    padding: 8px 12px;
+    display: block;
+  }
+  
+  /* Adjust card padding */
+  .pop-card {
+    padding: 15px !important;
+  }
+  
+  /* Marquee text adjustment */
+  #notices-marquee {
+    font-size: 0.9rem;
+  }
 }
