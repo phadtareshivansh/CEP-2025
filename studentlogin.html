@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Student Login</title>
+  <link rel="stylesheet" href="assets/css/studentlogin.css">
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+  <script src="assets/js/firebase-config.js"></script>
+  <script src="assets/js/auth.js"></script>
+  <script src="assets/js/toast.js"></script>
+  <script src="assets/js/utils.js"></script>
+</head>
+<body>
+  <div class="login-card">
+    <img src="https://th.bing.com/th/id/OIP.Y--lq46X4cVb7nFob31SaQHaDl?pid=ImgDetMain" alt="College Logo">
+    <h2>Student <span>Sign-In</span></h2>
+
+    <form id="loginForm" novalidate>
+      <div class="input-group">
+        <input type="email" id="email" placeholder="Email Address" required data-validate="email">
+      </div>
+
+      <div class="input-group">
+        <input type="password" id="password" placeholder="Password" required data-validate="required" minlength="6">
+        <span class="toggle-password" onclick="togglePassword()">👁</span>
+      </div>
+
+      <button class="login-btn" type="submit">SIGN IN</button>
+    </form>
+
+    <div class="links">
+      <a href="#" onclick="showHelp()">Help</a>
+      <a href="#" onclick="forgotPassword()">Forgot Password?</a>
+    </div>
+  </div>
+
+  <script>
+    function togglePassword() {
+      const passwordInput = document.getElementById('password');
+      passwordInput.type = passwordInput.type === 'password' ? 'text' : 'password';
+    }
+
+    const loginForm = document.getElementById('loginForm');
+    loginForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      // Validate form
+      const errors = FormValidator.validateForm(loginForm);
+      if (errors.length > 0) {
+        Toast.error('Please fix the errors above');
+        return;
+      }
+
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+      const submitBtn = loginForm.querySelector('button[type="submit"]');
+
+      LoadingManager.show(submitBtn, 'Signing in...');
+
+      try {
+        await Auth.init(); // Ensure Firebase initialized
+        
+        const userCredential = await firebase.auth().signInWithEmailAndPassword(email, password);
+        const user = userCredential.user;
+        
+        const userDoc = await firebase.firestore().collection('users').doc(user.uid).get();
+        
+        if (userDoc.exists) {
+          const userData = userDoc.data();
+          if (userData.role === 'student') {
+            Toast.success('Login successful! Redirecting...');
+            setTimeout(() => window.location.href = 'dashstudent.html', 800);
+          } else {
+            await firebase.auth().signOut();
+            Toast.error('Access denied. Student account required.');
+          }
+        } else {
+          // Demo fallback
+          if (email === 'student@college.edu') {
+            Toast.success('Demo login successful! Redirecting...');
+            setTimeout(() => window.location.href = 'dashstudent.html', 800);
+          } else {
+            await firebase.auth().signOut();
+            Toast.error('Account not configured. Contact admin.');
+          }
+        }
+      } catch (error) {
+        console.error('Login error:', error);
+        let message = 'Invalid email or password';
+        if (error.code === 'auth/user-not-found') message = 'No account found with this email';
+        else if (error.code === 'auth/wrong-password') message = 'Incorrect password';
+        else if (error.code === 'auth/invalid-email') message = 'Invalid email format';
+        else if (error.code === 'auth/too-many-requests') message = 'Too many attempts. Try again later.';
+        else if (error.code === 'auth/network-request-failed') message = 'Network error. Check connection.';
+        Toast.error(message);
+      } finally {
+        LoadingManager.hide(submitBtn);
+      }
+    });
+
+    function showHelp() {
+      Toast.info('Student Login Help:\n- Use your college email\n- Contact admin for account setup\n- Demo: student@college.edu / password');
+    }
+
+    function forgotPassword() {
+      const email = prompt('Enter your email for password reset:');
+      if (email) {
+        const emailValidation = Validators.email(email);
+        if (!emailValidation.valid) {
+          Toast.error('Invalid email format');
+          return;
+        }
+        
+        LoadingManager.show(document.querySelector('.login-btn'), 'Sending reset email...');
+        
+        try {
+          await firebase.auth().sendPasswordResetEmail(email);
+          Toast.success('Password reset email sent! Check your inbox.');
+        } catch (err) {
+          Toast.error('Error: ' + err.message);
+        } finally {
+          LoadingManager.hide(document.querySelector('.login-btn'));
+        }
+      }
+    }
+
+    // Real-time validation feedback
+    document.querySelectorAll('#loginForm input').forEach(input => {
+      input.addEventListener('blur', () => {
+        const error = FormValidator.validateField(input);
+        if (error) FormValidator.showError(input, error.message);
+        else FormValidator.clearError(input);
+      });
+      
+      input.addEventListener('input', () => {
+        if (input.classList.contains('is-invalid')) {
+          const error = FormValidator.validateField(input);
+          if (!error) FormValidator.clearError(input);
+        }
+      });
+    });
+
+    window.addEventListener('DOMContentLoaded', () => {
+      Auth.init((user) => {
+        if (user && window.location.pathname.includes('studentlogin.html')) {
+          window.location.href = 'dashstudent.html';
+        }
+      });
+    });
+  </script>
+</body>
+</html>

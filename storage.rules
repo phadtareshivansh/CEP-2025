@@ -1,0 +1,58 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+    // Public read for profile images, notes, library resources
+    match /public/{allPaths=**} {
+      allow read: if true;
+      allow write: if request.auth != null;
+    }
+    
+    // Faculty profile images
+    match /faculty/{facultyId}/{fileName} {
+      allow read: if true;
+      allow write: if request.auth != null && 
+        (request.auth.token.role == 'admin' || request.auth.uid == facultyId);
+    }
+    
+    // Student project submissions
+    match /projects/{studentId}/{fileName} {
+      allow read: if request.auth != null && 
+        (request.auth.token.role == 'admin' || 
+         request.auth.token.role == 'faculty' || 
+         request.auth.uid == studentId);
+      allow write: if request.auth != null && request.auth.uid == studentId;
+    }
+    
+    // Notes and study materials
+    match /notes/{fileName} {
+      allow read: if request.auth != null;
+      allow write: if request.auth != null && request.auth.token.role in ['admin', 'faculty'];
+    }
+    
+    // Library resources
+    match /library/{fileName} {
+      allow read: if request.auth != null;
+      allow write: if request.auth != null && request.auth.token.role in ['admin', 'faculty'];
+    }
+    
+    // Assignment submissions
+    match /assignments/{assignmentId}/{studentId}/{fileName} {
+      allow read: if request.auth != null && 
+        (request.auth.token.role == 'admin' || 
+         request.auth.token.role == 'faculty' || 
+         request.auth.uid == studentId);
+      allow write: if request.auth != null && request.auth.uid == studentId;
+    }
+    
+    // Contact form attachments (if any)
+    match /contacts/{contactId}/{fileName} {
+      allow read: if request.auth != null && request.auth.token.role == 'admin';
+      allow write: if true; // Public can submit
+    }
+    
+    // Default deny
+    match /{allPaths=**} {
+      allow read, write: if false;
+    }
+  }
+}

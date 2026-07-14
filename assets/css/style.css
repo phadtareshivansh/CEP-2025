@@ -1,0 +1,22 @@
+body {
+  font-family: "Segoe UI", sans-serif;
+}
+header .nav-link {
+  color: #333;
+  font-weight: 500;
+}
+header .nav-link:hover {
+  color: #0d6efd;
+}
+.carousel-caption {
+  background: rgba(0,0,0,0.5);
+  padding: 10px;
+  border-radius: 6px;
+}
+.card img {
+  height: 200px;
+  object-fit: cover;
+}
+footer {
+  font-size: 0.9rem;
+}

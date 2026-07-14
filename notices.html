@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Notices - Student Portal</title>
+  <link rel="stylesheet" href="assets/css/dashstudent.css">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+  <script src="assets/js/firebase-config.js"></script>
+  <script src="assets/js/auth.js"></script>
+</head>
+<body>
+  <div class="navbar">
+    <div class="logo-section">
+      <img src="https://th.bing.com/th/id/OIP.Y--lq46X4cVb7nFob31SaQHaDl?r=0&o=7&pid=ImgDetMain" alt="College Logo">
+      <h1>Notices & Announcements</h1>
+    </div>
+    <div class="menu">
+      <a href="dashstudent.html">Dashboard</a>
+      <a href="notices.html" class="active">Notices</a>
+      <a href="attendance-student.html">Attendance</a>
+      <a href="exams.html">Exams</a>
+      <a href="submit-project.html">Projects</a>
+      <a href="#" onclick="Auth.logout()">Logout</a>
+    </div>
+  </div>
+
+  <div class="dashboard">
+    <div class="welcome-header">
+      <h2>Notices & Announcements</h2>
+    </div>
+
+    <div class="filters mb-3">
+      <select class="form-select w-auto d-inline" id="noticeFilter" onchange="filterNotices()">
+        <option value="">All Categories</option>
+        <option value="academic">Academic</option>
+        <option value="event">Events</option>
+        <option value="exam">Examinations</option>
+        <option value="placement">Placements</option>
+        <option value="general">General</option>
+      </select>
+      <input type="text" class="form-control w-auto d-inline" id="noticeSearch" placeholder="Search..." oninput="filterNotices()">
+    </div>
+
+    <div id="noticesContainer" class="list-container">
+      <div class="loading">Loading notices...</div>
+    </div>
+  </div>
+
+  <script src="assets/js/notices.js"></script>
+</body>
+</html>

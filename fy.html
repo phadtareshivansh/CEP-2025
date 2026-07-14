@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Faculty Dashboard | FY</title>
+  <link rel="stylesheet" href="assets/css/fy.css" />
+</head>
+<body>
+  <header>
+    <h1>Faculty Dashboard - FY</h1>
+    <nav>
+      <button class="tab-btn active" data-tab="divA">Attendance</button>
+      <button class="tab-btn" data-tab="divB">Academic Analysis</button>
+      <button class="tab-btn" data-tab="divC">Faculty Features</button>
+    </nav>
+  </header>
+
+  <main>
+    <!-- Div A: Attendance -->
+    <section id="divA" class="tab-content active">
+      <h2>📋 Attendance Submission</h2>
+      <form id="attendanceForm">
+        <label for="studentName">Student Name:</label>
+        <input type="text" id="studentName" required />
+
+        <label for="rollNo">Roll No:</label>
+        <input type="number" id="rollNo" required />
+
+        <label for="status">Status:</label>
+        <select id="status">
+          <option>Present</option>
+          <option>Absent</option>
+        </select>
+
+        <button type="submit">Submit Attendance</button>
+      </form>
+
+      <div id="attendanceRecords">
+        <h3>Attendance Records</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>Roll No</th>
+              <th>Name</th>
+              <th>Status</th>
+              <th>Date</th>
+            </tr>
+          </thead>
+          <tbody id="recordsTable"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Div B: Academic Analysis -->
+    <section id="divB" class="tab-content">
+      <h2>📊 Academic Analysis</h2>
+      <div class="analysis">
+        <p><strong>Overall Performance:</strong></p>
+        <ul>
+          <li>Average Attendance: <span id="avgAttendance">0%</span></li>
+          <li>Average Marks: <span id="avgMarks">75%</span></li>
+        </ul>
+        <canvas id="marksChart"></canvas>
+      </div>
+    </section>
+
+    <!-- Div C: Faculty Features -->
+    <section id="divC" class="tab-content">
+      <h2>🎓 Faculty Features</h2>
+      <div class="features">
+        <button onclick="alert('Upload Notes feature coming soon!')">📂 Upload Notes</button>
+        <button onclick="alert('Announcement feature coming soon!')">📢 Announcements</button>
+        <button onclick="alert('Assignment Upload feature coming soon!')">📝 Upload Assignment</button>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>&copy; 2025 Faculty Portal - All Rights Reserved</p>
+  </footer>
+
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- Firebase SDK (Compat) -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+  <!-- Shared Firebase Config -->
+  <script src="assets/js/firebase-config.js"></script>
+  <script src="assets/js/utils.js"></script>
+  <script src="assets/js/toast.js"></script>
+  <!-- FY Dashboard Logic -->
+  <script src="assets/js/fy.js"></script>
+</body>
+</html>

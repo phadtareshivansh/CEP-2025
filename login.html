@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Faculty Login</title>
+  <link rel="stylesheet" href="assets/css/login.css">
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+  <script src="assets/js/firebase-config.js"></script>
+  <script src="assets/js/utils.js"></script>
+  <script src="assets/js/toast.js"></script>
+</head>
+<body>
+  <div class="login-card">
+    <img src="https://th.bing.com/th/id/OIP.Y--lq46X4cVb7nFob31SaQHaDl?pid=ImgDetMain" alt="College Logo">
+    <h2>Faculty <span>Sign-In</span></h2>
+
+    <form id="loginForm" novalidate>
+      <div class="input-group">
+        <label for="email" class="visually-hidden">Email Address</label>
+        <input type="email" id="email" name="email" placeholder="Email Address" required 
+               data-validate="required|email" autocomplete="email">
+        <div class="invalid-feedback"></div>
+      </div>
+
+      <div class="input-group">
+        <label for="password" class="visually-hidden">Password</label>
+        <input type="password" id="password" name="password" placeholder="Password" required
+               data-validate="required|minLength:6" autocomplete="current-password">
+        <span class="toggle-password" onclick="togglePassword()">👁</span>
+        <div class="invalid-feedback"></div>
+      </div>
+
+      <button type="submit" class="login-btn">SIGN IN</button>
+    </form>
+
+    <div class="links">
+      <a href="#" onclick="showHelp()">Help</a>
+      <a href="#" onclick="forgotPassword()">Forgot Password?</a>
+    </div>
+  </div>
+
+  <script>
+    function togglePassword() {
+      const passwordInput = document.getElementById('password');
+      passwordInput.type = passwordInput.type === 'password' ? 'text' : 'password';
+    }
+
+    // Form validation on blur
+    document.addEventListener('DOMContentLoaded', () => {
+      const form = document.getElementById('loginForm');
+      const inputs = form.querySelectorAll('input[data-validate]');
+      
+      inputs.forEach(input => {
+        input.addEventListener('blur', () => {
+          const error = FormValidator.validateField(input);
+          if (error) FormValidator.showError(input, error.message);
+          else FormValidator.clearError(input);
+        });
+        
+        input.addEventListener('input', () => {
+          if (input.classList.contains('is-invalid')) {
+            FormValidator.clearError(input);
+          }
+        });
+      });
+
+      // Form submit
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        const errors = FormValidator.validateForm(form);
+        if (errors.length > 0) {
+          Toast.error('Please fix the errors above');
+          return;
+        }
+
+        const email = document.getElementById('email').value.trim();
+        const password = document.getElementById('password').value;
+        const submitBtn = form.querySelector('button[type="submit"]');
+
+        LoadingManager.show(submitBtn, 'Signing in...');
+
+        try {
+          if (!window.firebaseAuth) initFirebase();
+          
+          const userCredential = await firebase.auth().signInWithEmailAndPassword(email, password);
+          const user = userCredential.user;
+          
+          const userDoc = await firebase.firestore().collection('users').doc(user.uid).get();
+          
+          if (userDoc.exists) {
+            const userData = userDoc.data();
+            if (userData.role === 'faculty' || userData.role === 'admin') {
+              Toast.success('Login successful! Redirecting...');
+              setTimeout(() => window.location.href = 'dashfaculty.html', 1000);
+            } else {
+              await firebase.auth().signOut();
+              Toast.error('Access denied. Faculty account required.');
+            }
+          } else {
+            // Demo accounts
+            if (email === 'mayur@college.edu' || email === 'sameer@college.edu') {
+              Toast.success('Demo login successful! Redirecting...');
+              setTimeout(() => window.location.href = 'dashfaculty.html', 1000);
+            } else {
+              await firebase.auth().signOut();
+              Toast.error('Account not configured. Contact admin.');
+            }
+          }
+        } catch (error) {
+          console.error('Login error:', error);
+          let message = 'Invalid email or password';
+          if (error.code === 'auth/user-not-found') message = 'No account found with this email';
+          else if (error.code === 'auth/wrong-password') message = 'Incorrect password';
+          else if (error.code === 'auth/invalid-email') message = 'Invalid email format';
+          else if (error.code === 'auth/too-many-requests') message = 'Too many attempts. Try again later.';
+          Toast.error(message);
+        } finally {
+          LoadingManager.hide(submitBtn);
+        }
+      });
+    });
+
+    function showHelp() {
+      Toast.info('Faculty Login Help:\n• Use your college email\n• Contact admin for account setup\n• Demo: mayur@college.edu / password');
+    }
+
+    function forgotPassword() {
+      const email = prompt('Enter your email for password reset:');
+      if (email) {
+        const emailValidation = Validators.email(email);
+        if (!emailValidation.valid) {
+          Toast.error('Invalid email format');
+          return;
+        }
+        
+        initFirebase();
+        firebase.auth().sendPasswordResetEmail(email)
+          .then(() => Toast.success('Password reset email sent! Check your inbox.'))
+          .catch(err => Toast.error('Error: ' + err.message));
+      }
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      initFirebase();
+      firebase.auth().onAuthStateChanged(user => {
+        if (user && window.location.pathname.includes('login.html')) {
+          window.location.href = 'dashfaculty.html';
+        }
+      });
+    });
+
+    function initFirebase() {
+      if (typeof firebase !== 'undefined' && firebaseConfig.apiKey !== "YOUR_API_KEY_HERE") {
+        firebase.initializeApp(firebaseConfig);
+      }
+    }
+  </script>
+</body>
+</html>

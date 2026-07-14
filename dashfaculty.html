@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AIML Faculty Dashboard</title>
+  <link rel="stylesheet" href="assets/css/dashfaculty.css">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+  <script src="assets/js/firebase-config.js"></script>
+  <script src="assets/js/utils.js"></script>
+  <script src="assets/js/toast.js"></script>
+  <script src="assets/js/auth.js"></script>
+</head>
+<body>
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <a class="navbar-brand" href="#">AIML Dashboard</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav ms-auto">
+        <li class="nav-item"><a class="nav-link" href="#">Home</a></li>
+        <li class="nav-item"><a class="nav-link" href="#">Projects</a></li>
+        <li class="nav-item"><a class="nav-link" href="#">Students</a></li>
+        <li class="nav-item"><a class="nav-link" href="#">Notifications</a></li>
+        <li class="nav-item"><a class="nav-link" href="#" onclick="Auth.logout()">Logout</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <div class="container-fluid dashboard-container">
+    <div class="row">
+      <!-- Sidebar -->
+      <div class="col-md-3 sidebar bg-light">
+        <h4 class="mt-3">Menu</h4>
+        <ul class="nav flex-column">
+          <li class="nav-item"><a class="nav-link active" href="#" onclick="showSection('dashboard')">Dashboard</a></li>
+          <li class="nav-item"><a class="nav-link" href="#" onclick="showSection('recommender')">Project Recommender</a></li>
+          <li class="nav-item"><a class="nav-link" href="#" onclick="showSection('attendance')">Attendance</a></li>
+          <li class="nav-item"><a class="nav-link" href="#" onclick="showSection('courses')">Courses & Assignments</a></li>
+          <li class="nav-item"><a class="nav-link" href="#" onclick="showSection('notes')">Notes & Imp. Points</a></li>
+          <li class="nav-item"><a class="nav-link" href="#" onclick="showSection('reports')">Reports</a></li>
+          <li class="nav-item"><a class="nav-link" href="#" onclick="showSection('chatbot')">Chatbot</a></li>
+          <li class="nav-item"><a class="nav-link" href="#" onclick="showSection('settings')">Settings</a></li>
+        </ul>
+        <div class="mt-3 p-3">
+          <small class="text-muted">Logged in as: <span data-user-name></span></small><br>
+          <small class="text-muted">Role: <span data-user-role></span></small>
+        </div>
+      </div>
+
+      <!-- Main Content -->
+      <div class="col-md-9 main-content p-4">
+        <!-- Dashboard Section -->
+        <section id="dashboard" class="content-section active">
+          <h2>Welcome, <span data-user-name>Faculty</span>!</h2>
+
+          <!-- Quick Stats -->
+          <div class="cards-container row">
+            <div class="col-md-4 mb-3">
+              <div class="card text-white bg-primary">
+                <div class="card-body">
+                  <h5 class="card-title"><a href="fy.html" class="nav-link text-white">Second Year</a></h5>
+                  <p class="card-text" id="totalStudents">120</p>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4 mb-3">
+              <div class="card text-white bg-success">
+                <div class="card-body">
+                  <h5 class="card-title">Third Year</h5>
+                  <p class="card-text" id="activeProjects">35</p>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4 mb-3">
+              <div class="card text-white bg-warning">
+                <div class="card-body">
+                  <h5 class="card-title">Fourth Year</h5>
+                  <p class="card-text" id="notifications">5</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Project Recommender (inline) -->
+          <div class="project-recommender mt-5">
+            <h4>Project Recommender</h4>
+            <input type="text" id="skills" placeholder="Enter skills (comma separated)" class="form-control mb-2">
+            <button id="recommendBtn" class="btn btn-primary mb-3">Get Recommendations</button>
+            <ul id="recommendations" class="list-group"></ul>
+          </div>
+        </section>
+
+        <!-- Attendance Section -->
+        <section id="attendance" class="content-section" style="display:none;">
+          <h4>Class-wise Attendance</h4>
+          <label for="courseSelect" class="form-label">Select Course:</label>
+          <select id="courseSelect" class="form-select mb-3">
+            <option value="AIML101">AI Fundamentals</option>
+            <option value="AIML201">Machine Learning</option>
+            <option value="AIML301">Deep Learning</option>
+          </select>
+          <form id="attendanceForm">
+            <table class="table table-bordered">
+              <thead class="table-dark">
+                <tr>
+                  <th>Roll No</th>
+                  <th>Student Name</th>
+                  <th>Present</th>
+                  <th>Absent</th>
+                </tr>
+              </thead>
+              <tbody id="studentTable">
+              </tbody>
+            </table>
+            <button type="submit" class="btn btn-primary">Save Attendance</button>
+          </form>
+          <div id="attendanceResult" class="mt-3 alert alert-info" style="display:none;"></div>
+        </section>
+
+        <!-- Courses & Assignments Section -->
+        <section id="courses" class="content-section" style="display:none;">
+          <h4>Courses & Assignments</h4>
+          <div class="row">
+            <div class="col-md-6">
+              <h5>My Courses</h5>
+              <button class="btn btn-sm btn-outline-primary mb-2" onclick="addCourse()">Add Course</button>
+              <ul id="courseList" class="list-group"></ul>
+            </div>
+            <div class="col-md-6">
+              <h5>Assignments</h5>
+              <button class="btn btn-sm btn-outline-primary mb-2" onclick="addAssignment()">Add Assignment</button>
+              <ul id="assignmentList" class="list-group"></ul>
+            </div>
+          </div>
+        </section>
+
+        <!-- Faculty Notes Section -->
+        <section id="notes" class="content-section" style="display:none;">
+          <h4>Notes for Students <span class="text-muted small">(with Important Points)</span></h4>
+          <div class="row mb-3">
+            <div class="col-md-6">
+              <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addNoteModal">
+                <i class="fas fa-plus me-1"></i>Add Note
+              </button>
+            </div>
+          </div>
+          <div class="row" id="notesGrid"></div>
+        </section>
+
+        <!-- Reports Section -->
+        <section id="reports" class="content-section" style="display:none;">
+          <h4>Reports</h4>
+          <div class="row">
+            <div class="col-md-4">
+              <div class="card">
+                <div class="card-body">
+                  <h6>Attendance Report</h6>
+                  <button class="btn btn-primary btn-sm" onclick="generateReport('attendance')">Generate</button>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="card">
+                <div class="card-body">
+                  <h6>Project Progress</h6>
+                  <button class="btn btn-primary btn-sm" onclick="generateReport('projects')">Generate</button>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="card">
+                <div class="card-body">
+                  <h6>Student Performance</h6>
+                  <button class="btn btn-primary btn-sm" onclick="generateReport('performance')">Generate</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Chatbot Section -->
+        <section id="chatbot" class="content-section" style="display:none;">
+          <h4>AI Assistant</h4>
+          <div class="card">
+            <div class="card-body" style="height:400px; overflow-y:auto;" id="chatMessages">
+              <div class="message bot-message">Hello! How can I help you today?</div>
+            </div>
+            <div class="card-footer">
+              <div class="input-group">
+                <input type="text" id="chatInput" class="form-control" placeholder="Ask me anything...">
+                <button class="btn btn-primary" onclick="sendChatMessage()">Send</button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Settings Section -->
+        <section id="settings" class="content-section" style="display:none;">
+          <h4>Settings</h4>
+          <div class="card">
+            <div class="card-body">
+              <h6>Profile</h6>
+              <div class="mb-3">
+                <label class="form-label">Name</label>
+                <input type="text" class="form-control" id="nameInput" data-user-name>
+              </div>
+              <div class="mb-3">
+                <label class="form-label">Email</label>
+                <input type="email" class="form-control" data-user-email disabled>
+              </div>
+              <div class="mb-3">
+                <label class="form-label">Role</label>
+                <input type="text" class="form-control" data-user-role disabled>
+              </div>
+              <button class="btn btn-primary" onclick="updateProfile()">Save Changes</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- Notes Section -->
+        <section id="notes" class="content-section" style="display:none;">
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <h4>Notes & Important Points</h4>
+            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addNoteModal">
+              <i class="fas fa-plus me-1"></i> Add Note
+            </button>
+          </div>
+          <div class="row g-3" id="notesGrid"></div>
+        </section>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add Note Modal -->
+  <div class="modal fade" id="addNoteModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title"><i class="fas fa-sticky-note me-2"></i>Add Note for Students</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <form id="addNoteForm">
+          <div class="modal-body">
+            <div class="mb-3">
+              <label class="form-label">Course</label>
+              <select class="form-select" name="courseId" id="noteCourseId" required>
+                <option value="">Select Course</option>
+                <option value="AIML101">AI Fundamentals</option>
+                <option value="AIML201">Machine Learning</option>
+                <option value="AIML301">Deep Learning</option>
+              </select>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Title</label>
+              <input type="text" class="form-control" name="title" required placeholder="e.g., Module 3 - Important Concepts">
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Content</label>
+              <textarea class="form-control" name="content" rows="4" required placeholder="Write your notes here..."></textarea>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Important Points (one per line)</label>
+              <textarea class="form-control" name="impPoints" rows="5" placeholder="Point 1&#10;Point 2&#10;Point 3"></textarea>
+              <div class="form-text">Enter key points students should focus on. These will be highlighted.</div>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Type</label>
+              <select class="form-select" name="type" required>
+                <option value="lecture">Lecture Notes</option>
+                <option value="imp_points">Important Points</option>
+                <option value="assignment">Assignment Hint</option>
+                <option value="exam_tip">Exam Tip</option>
+              </select>
+            </div>
+            <div class="form-check mb-3">
+              <input class="form-check-input" type="checkbox" name="isPublic" id="isPublic" checked>
+              <label class="form-check-label" for="isPublic">Visible to students immediately</label>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+            <button type="submit" class="btn btn-primary">Save Note</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+  <script src="assets/js/dashfaculty.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

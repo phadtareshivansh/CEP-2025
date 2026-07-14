@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PCU | Faculty Profile</title>
+  <link rel="stylesheet" href="assets/css/faculty.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="assets/js/toast.js"></script>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+</head>
+<body>
+
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg sticky-top">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="../homepage.html">
+      <img src="https://github.com/VishalMache/Website_ai-ml/blob/main/Pcu%20Thumbnail%5B1%5D%20(1)/Pcu%20Thumbnail/PCU_logo_152d67d738.png?raw=true" 
+           alt="PCU Logo" style="height:50px;">
+    </a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+        <li class="nav-item"><a class="nav-link" href="../about us/about_department.html">About Us</a></li>
+        <li class="nav-item"><a class="nav-link" href="Faculty.html">Faculty Profile</a></li>
+        <li class="nav-item"><a class="nav-link" href="login.html">Login</a></li>
+        <li class="nav-item"><a class="nav-link" href="../activity_workshop/activity_workshop.html">Activities</a></li>
+        
+        <li class="nav-item"><a class="nav-link" href="#">Contact</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- Hero -->
+<section class="hero-section text-center text-white">
+  <div class="container">
+    <h1 class="page-title">Faculty Profile</h1>
+    <p class="counter-subtitle">Meet Our Esteemed Faculty Members</p>
+    <div class="decorative-line"></div>
+  </div>
+</section>
+
+ <div class="faculty-grid">
+        <div class="faculty-card">
+            <img class="faculty-img" src="https://github.com/VishalMache/Website_ai-ml/blob/main/AI&ML%20Faculty%5B1%5D/AI&ML%20Faculty/Swati%20Shirke.png?raw=true" alt="Dr. Swati Deshmukh">
+            <div class="faculty-name">Dr. Swati Deshmukh</div>
+            <div class="faculty-role">Head of Department</div>
+            <div class="faculty-school">CSE - AI & ML</div>
+            <div class="faculty-icons">
+                <img src="https://github.com/VishalMache/Website_ai-ml/blob/main/Faculty%20section/linkedin%20icon.png?raw=true" alt="LinkedIn">
+                <img src="https://github.com/VishalMache/Website_ai-ml/blob/main/Faculty%20section/website%20icon.png?raw=true" alt="Website">
+            </div>
+            <button class="view-details-btn" onclick="openModal(0)">View Details</button>
+        </div>
+
+        <div class="faculty-card">
+            <img class="faculty-img" src="https://github.com/VishalMache/Website_ai-ml/blob/main/AI&ML%20Faculty%5B1%5D/AI&ML%20Faculty/Rahul%20Sonkamble.png?raw=true" alt="Dr. R. G. Biradar">
+            <div class="faculty-name">Dr. Rahul Sonkamble</div>
+            <div class="faculty-role">Assistant Professor</div>
+            <div class="faculty-school">CSE - AI & ML</div>
+            <div class="faculty-icons">
+                <img src="https://github.com/VishalMache/Website_ai-ml/blob/main/Faculty%20section/linkedin%20icon.png?raw=true" alt="LinkedIn">
+                <img src="https://github.com/VishalMache/Website_ai-ml/blob/main/Faculty%20section/website%20icon.png?raw=true" alt="Website">
+            </div>
+            <button class="view-details-btn" onclick="openModal(1)">View Details</button>
+        </div>
+
+        <div class="faculty-card">
+            <img class="faculty-img" src="https://github.com/VishalMache/Website_ai-ml/blob/main/AI&ML%20Faculty%5B1%5D/AI&ML%20Faculty/Dr.Yudhishthir%20Raut.png?raw=true" alt="Dr. Yudhishthir Raut">
+            <div class="faculty-name">Dr. Yudhishthir Raut</div>
+            <div class="faculty-role">Assistant Professor</div>
+            <div class="faculty-school">CSE - AI & ML</div>
+            <div class="faculty-icons">
+                <img src="https://github.com/VishalMache/Website_ai-ml/blob/main/Faculty%20section/linkedin%20icon.png?raw=true" alt="LinkedIn">
+                <img src="https://github.com/VishalMache/Website_ai-ml/blob/main/Faculty%20section/website%20icon.png?raw=true" alt="Website">
+            </div>
+            <button class="view-details-btn" onclick="openModal(2)">View Details</button>
+        </div>
+
+        <div class="faculty-card">
+            <img class="faculty-img" src="https://github.com/VishalMache/Website_ai-ml/blob/main/AI&ML%20Faculty%5B1%5D/AI&ML%20Faculty/Rupali%20Zambre.png?raw=true" alt="Ms. Rupali Samarth Zambre">
+            <div class="faculty-name">Ms. Rupali Zambre</div>
+            <div class="faculty-role">Assistant Professor</div>
+            <div class="faculty-school">CSE - AI & ML</div>
+            <div class="faculty-icons">
+                <img src="https://github.com/VishalMache/Website_ai-ml/blob/main/Faculty%20section/linkedin%20icon.png?raw=true" alt="LinkedIn">
+                <img src="https://github.com/VishalMache/Website_ai-ml/blob/main/Faculty%20section/website%20icon.png?raw=true" alt="Website">
+            </div>
+            <button class="view-details-btn" onclick="openModal(3)">View Details</button>
+        </div>
+
+        <div class="faculty-card">
+            <img class="faculty-img" src="https://github.com/VishalMache/Website_ai-ml/blob/main/AI&ML%20Faculty%5B1%5D/AI&ML%20Faculty/Nilesh%20Pinjarkar.png?raw=true" alt="Mr. Nilesh R. Pinjarkar">
+            <div class="faculty-name">Mr. Nilesh R. Pinjarkar</div>
+            <div class="faculty-role">Assistant Professor</div>
+            <div class="faculty-school">CSE - AI & ML</div>
+            <div class="faculty-icons">
+                <img src="https://github.com/VishalMache/Website_ai-ml/blob/main/Faculty%20section/linkedin%20icon.png?raw=true" alt="LinkedIn">
+                <img src="https://github.com/VishalMache/Website_ai-ml/blob/main/Faculty%20section/website%20icon.png?raw=true" alt="Website">
+            </div>
+            <button class="view-details-btn" onclick="openModal(4)">View Details</button>
+        </div>
+
+        <div class="faculty-card">
+            <img class="faculty-img" src="https://github.com/VishalMache/Website_ai-ml/blob/main/AI&ML%20Faculty%5B1%5D/AI&ML%20Faculty/Vaibhavi%20Avachat.jpg?raw=true" alt="Dr. Meera Rao">
+            <div class="faculty-name">Vaibhavi Umesh Avachat</div>
+            <div class="faculty-role">Assistant Professor</div>
+            <div class="faculty-school">CSE - AI & ML</div>
+            <div class="faculty-icons">
+                <img src="https://github.com/VishalMache/Website_ai-ml/blob/main/Faculty%20section/linkedin%20icon.png?raw=true" alt="LinkedIn">
+                <img src="https://github.com/VishalMache/Website_ai-ml/blob/main/Faculty%20section/website%20icon.png?raw=true" alt="Website">
+            </div>
+            <button class="view-details-btn" onclick="openModal(5)">View Details</button>
+        </div>
+
+        <div class="faculty-card">
+            <img class="faculty-img" src="https://github.com/VishalMache/Website_ai-ml/blob/main/AI&ML%20Faculty%5B1%5D/AI&ML%20Faculty/Ashwini%20Biradar.jpg?raw=true" alt="Ashwini Biradar">
+            <div class="faculty-name">Ashwini Biradar</div>
+            <div class="faculty-role">Assistant Professor</div>
+            <div class="faculty-school">CSE - AI & ML</div>
+            <div class="faculty-icons">
+                <img src="https://github.com/VishalMache/Website_ai-ml/blob/main/Faculty%20section/linkedin%20icon.png?raw=true" alt="LinkedIn">
+                <img src="https://github.com/VishalMache/Website_ai-ml/blob/main/Faculty%20section/website%20icon.png?raw=true" alt="Website">
+            </div>
+            <button class="view-details-btn" onclick="openModal(6)">View Details</button>
+        </div>
+
+        <div class="faculty-card">
+            <img class="faculty-img" src="https://raw.githubusercontent.com/VishalMache/Website_ai-ml/refs/heads/main/AI%26ML%20Faculty%5B1%5D/AI%26ML%20Faculty/Priyanka%20Gupta.webp" alt="Priyanka Gupta">
+            <div class="faculty-name">Priyanka Gupta</div>
+            <div class="faculty-role">Assistant Professor</div>
+            <div class="faculty-school">CSE - AI & ML</div>
+            <div class="faculty-icons">
+                <img src="https://github.com/VishalMache/Website_ai-ml/blob/main/Faculty%20section/linkedin%20icon.png?raw=true" alt="LinkedIn">
+                <img src="https://github.com/VishalMache/Website_ai-ml/blob/main/Faculty%20section/website%20icon.png?raw=true" alt="Website">
+            </div>
+            <button class="view-details-btn" onclick="openModal(7)">View Details</button>
+        </div>
+
+        <div class="faculty-card">
+            <img class="faculty-img" src="https://raw.githubusercontent.com/VishalMache/Website_ai-ml/refs/heads/main/AI%26ML%20Faculty%5B1%5D/AI%26ML%20Faculty/Tanuja%20Lanjewar.webp" alt="Tanuja Pande">
+            <div class="faculty-name">Tanuja Lanjewar</div>
+            <div class="faculty-role">Assistant Professor</div>
+            <div class="faculty-school">CSE - AI & ML</div>
+            <div class="faculty-icons">
+                <img src="https://github.com/VishalMache/Website_ai-ml/blob/main/Faculty%20section/linkedin%20icon.png?raw=true" alt="LinkedIn">
+                <img src="https://github.com/VishalMache/Website_ai-ml/blob/main/Faculty%20section/website%20icon.png?raw=true" alt="Website">
+            </div>
+            <button class="view-details-btn" onclick="openModal(8)">View Details</button>
+        </div>
+
+        <div class="faculty-card">
+            <img class="faculty-img" src="https://github.com/VishalMache/Website_ai-ml/blob/main/AI&ML%20Faculty%5B1%5D/AI&ML%20Faculty/Moreshwar%20Mahale.jpg?raw=true" alt="Moreshwar A. Mahale">
+            <div class="faculty-name">Moreshwar A. Mahale</div>
+            <div class="faculty-role">Assistant Professor</div>
+            <div class="faculty-school">CSE - AI & ML</div>
+            <div class="faculty-icons">
+                <img src="https://github.com/VishalMache/Website_ai-ml/blob/main/Faculty%20section/linkedin%20icon.png?raw=true" alt="LinkedIn">
+                <img src="https://github.com/VishalMache/Website_ai-ml/blob/main/Faculty%20section/website%20icon.png?raw=true" alt="Website">
+            </div>
+            <button class="view-details-btn" onclick="openModal(9)">View Details</button>
+        </div>
+    </div>
+
+
+<!-- Modal -->
+<div id="facultyModal" class="modal">
+  <div class="modal-content">
+    <span class="close" onclick="closeModal()">&times;</span>
+    <div class="modal-body">
+      <div class="modal-image-section">
+        <img id="modalImage" class="modal-faculty-img" src="" alt="Faculty Image">
+        <div class="modal-social-icons">
+          <a id="modalLinkedinIcon" class="social-icon linkedin-icon" href="#" target="_blank">
+            <i class="fab fa-linkedin-in"></i>
+          </a>
+          <a id="modalWebsiteIcon" class="social-icon website-icon" href="#" target="_blank">
+            <i class="fas fa-globe"></i>
+          </a>
+        </div>
+      </div>
+      <div class="modal-info-section">
+        <div id="modalName" class="modal-faculty-name"></div>
+        <div id="modalRole" class="modal-faculty-role"></div>
+        <div id="modalSchool" class="modal-faculty-school"></div>
+        <div id="modalDescription" class="modal-description"></div>
+        <div class="modal-buttons">
+          <a id="websiteBtn" class="website-btn" href="#" target="_blank">View Website</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Footer -->
+<footer class="text-white text-center py-4">
+  <p>© 2025 PCU | All Rights Reserved</p>
+</footer>
+
+<!-- JS -->
+<script src="assets/js/faculty.js"></script>
+
+</body>
+</html>

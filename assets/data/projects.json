@@ -1,0 +1,5 @@
+[
+  {"title": "AI Chatbot", "summary": "Chatbot for student queries using NLP.", "image": "project1.jpg"},
+  {"title": "ML Recommender", "summary": "Recommendation system for projects.", "image": "project1.jpg"},
+  {"title": "Attendance AI", "summary": "Automated attendance using face recognition.", "image": "project1.jpg"}
+]

@@ -1,0 +1,29 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f5f5f5;
+}
+
+.sidebar {
+    min-height: 100vh;
+}
+
+.sidebar .nav-link.active {
+    font-weight: bold;
+    color: #0d6efd !important;
+}
+
+.dashboard-container .card {
+    border-radius: 10px;
+}
+
+.chatbox {
+    border: 1px solid #ccc;
+    padding: 10px;
+    height: 200px;
+    overflow-y: scroll;
+    background-color: #fff;
+}
+
+.chat-messages p {
+    margin: 5px 0;
+}

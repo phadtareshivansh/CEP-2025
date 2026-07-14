@@ -1,0 +1,134 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Helper functions
+    function isSignedIn() {
+      return request.auth != null;
+    }
+    
+    function getUserData() {
+      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data;
+    }
+    
+    function isAdmin() {
+      return isSignedIn() && getUserData().role == 'admin';
+    }
+    
+    function isFaculty() {
+      return isSignedIn() && (getUserData().role == 'faculty' || getUserData().role == 'admin');
+    }
+    
+    function isStudent() {
+      return isSignedIn() && getUserData().role == 'student';
+    }
+    
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    // Users collection - users can read/update their own, admins can manage all
+    match /users/{userId} {
+      allow read: if isSignedIn() && (isOwner(userId) || isAdmin());
+      allow create: if isSignedIn() && isOwner(userId);
+      allow update: if isSignedIn() && (isOwner(userId) || isAdmin());
+      allow delete: if isAdmin();
+    }
+
+    // Faculty profiles - public read, admin write
+    match /faculty/{facultyId} {
+      allow read: if true; // Public for faculty directory
+      allow write: if isAdmin();
+    }
+
+    // Students - students read own, faculty/admins read all, admins write
+    match /students/{studentId} {
+      allow read: if isSignedIn() && (isAdmin() || isFaculty() || isOwner(studentId));
+      allow write: if isAdmin();
+    }
+
+    // Courses - faculty read own, students read enrolled, admins manage
+    match /courses/{courseId} {
+      allow read: if isSignedIn() && (isAdmin() || isFaculty() || 
+        (isStudent() && getUserData().courses.hasAny([courseId])));
+      allow write: if isAdmin() || (isFaculty() && request.resource.data.facultyId == request.auth.uid);
+    }
+
+    // Attendance - faculty mark for their courses, students read own, admins manage
+    match /attendance/{attendanceId} {
+      allow read: if isSignedIn() && (isAdmin() || 
+        (isFaculty() && resource.data.markedBy == request.auth.uid) ||
+        (isStudent() && resource.data.records.any(r => r.studentId == getUserData().rollNo)));
+      allow create: if isSignedIn() && (isAdmin() || isFaculty());
+      allow update, delete: if isAdmin();
+    }
+
+    // Marks/Grades - faculty write, students read own, admins manage
+    match /marks/{markId} {
+      allow read: if isSignedIn() && (isAdmin() || isFaculty() || 
+        (isStudent() && resource.data.studentId == getUserData().rollNo));
+      allow write: if isAdmin() || (isFaculty() && request.resource.data.courseId in getUserData().courses);
+    }
+
+    // Projects - students submit, faculty review, admins manage
+    match /projects/{projectId} {
+      allow read: if isSignedIn() && (isAdmin() || isFaculty() || 
+        (isStudent() && resource.data.studentId == request.auth.uid));
+      allow create: if isSignedIn() && isStudent();
+      allow update: if isSignedIn() && (isAdmin() || 
+        (isFaculty() && request.resource.data.status == 'Graded') ||
+        (isStudent() && resource.data.studentId == request.auth.uid && resource.data.status == 'In Progress'));
+      allow delete: if isAdmin() || (isStudent() && resource.data.studentId == request.auth.uid);
+    }
+
+    // Notices - published notices readable by target audience, admins manage
+    match /notices/{noticeId} {
+      allow read: if isSignedIn() && (isAdmin() || 
+        (resource.data.published == true && resource.data.targetAudience.hasAny([getUserData().role])));
+      allow write: if isAdmin();
+    }
+
+    // Assignments - faculty create for their courses, students read enrolled
+    match /assignments/{assignmentId} {
+      allow read: if isSignedIn() && (isAdmin() || isFaculty() || 
+        (isStudent() && resource.data.courseId in getUserData().courses));
+      allow write: if isAdmin() || (isFaculty() && resource.data.facultyId == request.auth.uid);
+    }
+
+    // Notes - faculty upload, students download if in target years
+    match /notes/{noteId} {
+      allow read: if isSignedIn() && (isAdmin() || isFaculty() || 
+        (isStudent() && resource.data.targetYears.hasAny([getUserData().year])));
+      allow write: if isAdmin() || isFaculty();
+    }
+
+    // Events - published events readable by all, admins manage
+    match /events/{eventId} {
+      allow read: if isSignedIn() && (isAdmin() || resource.data.published == true);
+      allow write: if isAdmin();
+    }
+
+    // Placements - published readable by students, admins manage
+    match /placements/{placementId} {
+      allow read: if isSignedIn() && (isAdmin() || (isStudent() && resource.data.published == true));
+      allow write: if isAdmin();
+    }
+
+    // Library resources - published readable by students, admins/faculty manage
+    match /library/{resourceId} {
+      allow read: if isSignedIn() && (isAdmin() || isFaculty() || 
+        (isStudent() && resource.data.published == true));
+      allow write: if isAdmin() || isFaculty();
+    }
+
+    // Contacts - anyone can submit, admins read
+    match /contacts/{contactId} {
+      allow create: if true; // Public contact form
+      allow read: if isAdmin();
+    }
+
+    // Analytics/Logs - admin only
+    match /analytics/{docId} {
+      allow read, write: if isAdmin();
+    }
+  }
+}

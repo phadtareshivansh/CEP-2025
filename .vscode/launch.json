@@ -1,0 +1,20 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Attach to Edge",
+      "port": 9222,
+      "request": "attach",
+      "type": "msedge",
+      "webRoot": "${workspaceFolder}"
+    },
+    {
+      "name": "Launch AIML Portal",
+      "request": "launch",
+      "type": "msedge",
+      "url": "http://localhost:8080/index.html",
+      "webRoot": "${workspaceFolder}"
+    }
+  ]
+}
+

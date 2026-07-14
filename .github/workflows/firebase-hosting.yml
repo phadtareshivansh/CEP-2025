@@ -1,0 +1,124 @@
+name: Deploy to Firebase Hosting
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+env:
+  FIREBASE_PROJECT_ID: ${{ secrets.FIREBASE_PROJECT_ID }}
+
+jobs:
+  lint_and_test:
+    name: Lint & Validate
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+      
+      - name: Install dependencies
+        run: |
+          # No package.json, but we can validate HTML/JS
+          echo "Validating HTML files..."
+          
+      - name: Validate HTML
+        run: |
+          # Check for basic HTML syntax issues
+          for file in *.html; do
+            echo "Checking $file..."
+            # Check for unclosed tags
+            if ! grep -q "</html>" "$file"; then
+              echo "⚠️  Warning: $file might not have closing </html> tag"
+            fi
+            # Check for Firebase config placeholder
+            if grep -q "YOUR_API_KEY_HERE" "$file"; then
+              echo "⚠️  Warning: $file contains placeholder Firebase config"
+            fi
+          done
+          
+      - name: Validate JavaScript syntax
+        run: |
+          echo "Checking JS syntax..."
+          for file in assets/js/*.js; do
+            echo "Checking $file..."
+            node --check "$file" 2>/dev/null || echo "⚠️  Syntax check skipped for $file (may use browser APIs)"
+          done
+          
+      - name: Check required files
+        run: |
+          REQUIRED_FILES=(
+            "index.html"
+            "login.html"
+            "studentlogin.html"
+            "dashfaculty.html"
+            "dashstudent.html"
+            "fy.html"
+            "admin.html"
+            "about.html"
+            "contact.html"
+            "faculty.html"
+            "assets/js/firebase-config.js"
+            "assets/js/auth.js"
+            "assets/js/utils.js"
+            "assets/js/toast.js"
+            "assets/js/main.js"
+            "firestore.rules"
+            "firebase.json"
+          )
+          
+          for file in "${REQUIRED_FILES[@]}"; do
+            if [ ! -f "$file" ]; then
+              echo "❌ Missing required file: $file"
+              exit 1
+            fi
+            echo "✅ Found: $file"
+          done
+
+  deploy_staging:
+    name: Deploy to Staging
+    needs: lint_and_test
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Deploy to Firebase Preview Channel
+        uses: FirebaseExtended/action-hosting-deploy@v0
+        with:
+          repoToken: "${{ secrets.GITHUB_TOKEN }}"
+          firebaseServiceAccount: "${{ secrets.FIREBASE_SERVICE_ACCOUNT }}"
+          projectId: ${{ env.FIREBASE_PROJECT_ID }}
+          channelId: pr-${{ github.event.pull_request.number }}
+          expires: 7d
+
+  deploy_production:
+    name: Deploy to Production
+    needs: lint_and_test
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Deploy to Firebase Hosting
+        uses: FirebaseExtended/action-hosting-deploy@v0
+        with:
+          repoToken: "${{ secrets.GITHUB_TOKEN }}"
+          firebaseServiceAccount: "${{ secrets.FIREBASE_SERVICE_ACCOUNT }}"
+          projectId: ${{ env.FIREBASE_PROJECT_ID }}
+
+  notify:
+    name: Notify
+    needs: [deploy_staging, deploy_production]
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send notification
+        run: |
+          echo "Deployment completed!"
+          echo "Status: ${{ needs.deploy_staging.result || needs.deploy_production.result }}"

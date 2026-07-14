@@ -1,0 +1,165 @@
+/* General */
+body {
+  margin: 0;
+  font-family: "Segoe UI", Arial, sans-serif;
+  background: #f9f9f9;
+  color: #333;
+}
+
+/* Navbar */
+.navbar {
+  background: #fff;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+.navbar .nav-link {
+  font-weight: 500;
+  color: #333 !important;
+}
+.navbar .nav-link:hover {
+  color: #0d6efd !important;
+}
+
+/* Hero Section */
+.hero-section {
+  background: linear-gradient(rgba(13,110,253,0.8), rgba(13,110,253,0.8)),
+              url("https://images.unsplash.com/photo-1523580846011-d3a5bc25702b") center/cover;
+  padding: 60px 20px;
+}
+.page-title {
+  font-size: 2.5rem;
+  font-weight: bold;
+}
+.counter-subtitle {
+  font-size: 1.2rem;
+  margin-top: 10px;
+}
+.decorative-line {
+  width: 80px;
+  height: 4px;
+  background: white;
+  margin: 20px auto 0;
+  border-radius: 2px;
+}
+
+
+/* Faculty Grid */
+.faculty-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 50px;
+  padding: 40px;
+}
+.faculty-card {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+  padding: 20px;
+  text-align: center;
+  transition: transform 0.3s ease;
+}
+.faculty-card:hover {
+  transform: translateY(-8px);
+}
+.faculty-img {
+  width: 100%;
+  height: 200px;
+  object-fit: contain;
+  border-radius: 8px;
+}
+.faculty-name {
+  font-size: 20px;
+  font-weight: bold;
+  margin-top: 15px;
+}
+.faculty-role {
+  color: #777;
+  font-size: 15px;
+}
+.faculty-icons img {
+  width: 24px;
+  margin: 5px;
+  cursor: pointer;
+}
+.view-details-btn {
+  margin-top: 12px;
+  background: #152d67;
+  color: white;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+.view-details-btn:hover {
+  background: #0e1f47;
+}
+
+/* Modal */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  padding-top: 60px;
+  left: 0; top: 0;
+  width: 100%; height: 100%;
+  background: rgba(0,0,0,0.6);
+}
+.modal-content {
+  background: #fff;
+  margin: auto;
+  padding: 20px;
+  border-radius: 12px;
+  width: 80%;
+  max-width: 800px;
+  display: flex;
+  animation: fadeIn 0.5s ease;
+}
+.close {
+  position: absolute;
+  right: 30px;
+  top: 15px;
+  font-size: 28px;
+  cursor: pointer;
+}
+.modal-body {
+  display: flex;
+  gap: 20px;
+}
+.modal-image-section {
+  flex: 1;
+  text-align: center;
+}
+.modal-faculty-img {
+  width: 100%;
+  max-width: 250px;
+  border-radius: 10px;
+}
+.modal-info-section {
+  flex: 2;
+}
+.modal-faculty-name {
+  font-size: 24px;
+  font-weight: bold;
+}
+.modal-description {
+  margin-top: 12px;
+  font-size: 15px;
+  line-height: 1.5;
+}
+.website-btn {
+  display: inline-block;
+  margin-top: 15px;
+  padding: 8px 15px;
+  background: #152d67;
+  color: white;
+  border-radius: 6px;
+  text-decoration: none;
+}
+.website-btn:hover {
+  background: #0e1f47;
+}
+
+/* Footer */
+footer {
+  background: #152d67;
+  margin-top: 40px;
+}
